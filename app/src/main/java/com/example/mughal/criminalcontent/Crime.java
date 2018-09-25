@@ -36,6 +36,7 @@ public class Crime {
     public boolean isSolved() {
         return mSolved;
     }
+
     public void setTitle(String Title) {
         mTitle = Title;
     }
