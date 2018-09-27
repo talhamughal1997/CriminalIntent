@@ -10,11 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import android.text.format.DateFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,6 +19,8 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+
+    private static final int REQUEST_CRIME = 1;
 
     @Nullable
     @Override
@@ -37,9 +35,27 @@ public class CrimeListFragment extends Fragment {
 
     }
 
+    public void onResume()
+    {
+        super.onResume();
+        UpdateUI();
+    }
+
+
     private void UpdateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+
+        if(mAdapter == null)
+        {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else
+        {
+            mAdapter.notifyDataSetChanged();
+        }
+
         mAdapter = new CrimeAdapter(crimes);
         mCrimeRecyclerView.setAdapter(mAdapter);
     }
@@ -48,7 +64,7 @@ public class CrimeListFragment extends Fragment {
         TextView mTitleTextView;
         TextView mDateTextView;
 
-        private Crime mCrimes;
+        private Crime mCrime;
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
@@ -59,17 +75,17 @@ public class CrimeListFragment extends Fragment {
         }
 
         public void Bind(Crime crime) {
-            mCrimes = crime;
-            mTitleTextView.setText(mCrimes.getTitle());
+            mCrime = crime;
+            mTitleTextView.setText(mCrime.getTitle());
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            String formatDate = simpleDateFormat.format(mCrimes.getDate());
+            String formatDate = simpleDateFormat.format(mCrime.getDate());
             mDateTextView.setText(formatDate.toString());
         }
 
         @Override
         public void onClick(View view) {
-            Intent intent = CrimeActivity.newIntent(getActivity(),mCrimes.getId());
-            startActivity(intent);
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            startActivityForResult(intent,REQUEST_CRIME);
         }
     }
 

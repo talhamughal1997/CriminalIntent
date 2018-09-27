@@ -21,15 +21,27 @@ import static android.widget.CompoundButton.*;
 
 public class FragmentCrime extends Fragment {
 
+    private static final String ARG_CRIME_ID = "crime_id";
+
     private Crime mCrime;
     EditText mTextField;
     Button mDateButton;
     CheckBox mSolvedCheckBox;
 
+    public static FragmentCrime newInstance(UUID crimeId)
+    {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID,crimeId);
+
+        FragmentCrime fragment = new FragmentCrime();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
+        UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
     }
 
@@ -39,8 +51,10 @@ public class FragmentCrime extends Fragment {
         View v = inflater.inflate(R.layout.fragment_crime,container,false);
 
         mTextField = v.findViewById(R.id.crime_title);
+        mTextField.setText(mCrime.getTitle());
         mDateButton = v.findViewById(R.id.crime_date);
         mSolvedCheckBox = v.findViewById(R.id.crime_solved);
+        mSolvedCheckBox.setChecked(mCrime.isSolved());
         mDateButton.setText(mCrime.getDate().toString());
         mDateButton.setEnabled(false);
 

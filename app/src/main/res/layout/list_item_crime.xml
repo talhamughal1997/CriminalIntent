@@ -6,37 +6,44 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     android:orientation="vertical"
+    android:background="#aeb3b3"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/crime_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="8dp"
-        android:text="Crime Title " />
+        android:text="Crime Title "
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:textStyle="bold"
+        android:textColor="#fff"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="8dp" />
 
     <TextView
         android:id="@+id/crime_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:text="Crime Date "
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="8dp" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="52dp"
+        android:layout_height="54dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
-        tools:layout_editor_absoluteY="8dp"
-        tools:ignore="MissingConstraints" />
+        app:srcCompat="@mipmap/crime_icon"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>
