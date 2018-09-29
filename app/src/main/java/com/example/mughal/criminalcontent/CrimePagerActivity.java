@@ -19,10 +19,9 @@ public class CrimePagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
 
-    public static Intent newIntent(Context PackageContext , UUID CrimeId)
-    {
-        Intent intent = new Intent(PackageContext,CrimePagerActivity.class);
-        intent.putExtra(EXTRA_CRIME_ID,CrimeId);
+    public static Intent newIntent(Context PackageContext, UUID CrimeId) {
+        Intent intent = new Intent(PackageContext, CrimePagerActivity.class);
+        intent.putExtra(EXTRA_CRIME_ID, CrimeId);
         return intent;
     }
 
@@ -52,13 +51,11 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
         });
 
-       for (int i = 0 ; i < mCrimes.size(); i++)
-       {
-           if(mCrimes.get(i).getId().equals(crimeId))
-           {
-               mViewPager.setCurrentItem(i);
-               break;
-           }
-       }
+        for (int i = 0; i < mCrimes.size(); i++) {
+            if (mCrimes.get(i).getId().equals(crimeId)) {
+                mViewPager.setCurrentItem(i);
+                break;
+            }
+        }
     }
 }

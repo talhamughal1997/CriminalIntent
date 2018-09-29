@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -22,11 +23,12 @@ import static android.widget.CompoundButton.*;
 public class FragmentCrime extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
-
+    private static final String DIALOG_DATE = "DialogDate";
     private Crime mCrime;
     EditText mTextField;
     Button mDateButton;
     CheckBox mSolvedCheckBox;
+
 
     public static FragmentCrime newInstance(UUID crimeId)
     {
@@ -43,11 +45,12 @@ public class FragmentCrime extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime,container,false);
 
         mTextField = v.findViewById(R.id.crime_title);
@@ -56,7 +59,16 @@ public class FragmentCrime extends Fragment {
         mSolvedCheckBox = v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
         mDateButton.setText(mCrime.getDate().toString());
-        mDateButton.setEnabled(false);
+        mDateButton.setEnabled(true);
+
+        mDateButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getFragmentManager();
+                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+                dialog.show(fm,DIALOG_DATE);
+            }
+        });
 
         mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
