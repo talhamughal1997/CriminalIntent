@@ -1,5 +1,7 @@
 package com.example.mughal.criminalcontent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.UUID;
 import java.util.zip.Inflater;
 
@@ -24,16 +27,19 @@ public class FragmentCrime extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
+    private static final String DIALOG_CONFIRM = "DialogConfirm";
+
+    private static final int REQUEST_DATE = 0;
+
     private Crime mCrime;
     EditText mTextField;
     Button mDateButton;
     CheckBox mSolvedCheckBox;
 
 
-    public static FragmentCrime newInstance(UUID crimeId)
-    {
+    public static FragmentCrime newInstance(UUID crimeId) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_CRIME_ID,crimeId);
+        args.putSerializable(ARG_CRIME_ID, crimeId);
 
         FragmentCrime fragment = new FragmentCrime();
         fragment.setArguments(args);
@@ -51,14 +57,14 @@ public class FragmentCrime extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_crime,container,false);
+        View v = inflater.inflate(R.layout.fragment_crime, container, false);
 
         mTextField = v.findViewById(R.id.crime_title);
         mTextField.setText(mCrime.getTitle());
         mDateButton = v.findViewById(R.id.crime_date);
         mSolvedCheckBox = v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
-        mDateButton.setText(mCrime.getDate().toString());
+        updateDate();
         mDateButton.setEnabled(true);
 
         mDateButton.setOnClickListener(new OnClickListener() {
@@ -66,13 +72,18 @@ public class FragmentCrime extends Fragment {
             public void onClick(View view) {
                 FragmentManager fm = getFragmentManager();
                 DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
-                dialog.show(fm,DIALOG_DATE);
+                dialog.setTargetFragment(FragmentCrime.this, REQUEST_DATE);
+                dialog.show(fm, DIALOG_DATE);
             }
         });
+
 
         mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                FragmentManager fm = getFragmentManager();
+                ConfirmDialog dialog = ConfirmDialog.newInstance(mCrime.isSolved());
+                dialog.show(fm,DIALOG_CONFIRM);
                 mCrime.setSolved(isChecked);
             }
         });
@@ -95,5 +106,21 @@ public class FragmentCrime extends Fragment {
         });
 
         return v;
+    }
+
+    private void updateDate() {
+        mDateButton.setText(mCrime.getDate().toString());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
+            updateDate();
+        }
     }
 }
