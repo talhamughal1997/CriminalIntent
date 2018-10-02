@@ -19,7 +19,6 @@ import android.widget.EditText;
 
 import java.util.Date;
 import java.util.UUID;
-import java.util.zip.Inflater;
 
 import static android.widget.CompoundButton.*;
 
@@ -30,6 +29,7 @@ public class FragmentCrime extends Fragment {
     private static final String DIALOG_CONFIRM = "DialogConfirm";
 
     private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_CONFIRM = 111;
 
     private Crime mCrime;
     EditText mTextField;
@@ -64,7 +64,7 @@ public class FragmentCrime extends Fragment {
         mDateButton = v.findViewById(R.id.crime_date);
         mSolvedCheckBox = v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
-        updateDate();
+        UpdateData();
         mDateButton.setEnabled(true);
 
         mDateButton.setOnClickListener(new OnClickListener() {
@@ -83,8 +83,9 @@ public class FragmentCrime extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 FragmentManager fm = getFragmentManager();
                 ConfirmDialog dialog = ConfirmDialog.newInstance(mCrime.isSolved());
+                dialog.setTargetFragment(FragmentCrime.this,REQUEST_CONFIRM);
                 dialog.show(fm,DIALOG_CONFIRM);
-                mCrime.setSolved(isChecked);
+
             }
         });
 
@@ -108,8 +109,9 @@ public class FragmentCrime extends Fragment {
         return v;
     }
 
-    private void updateDate() {
+    private void UpdateData() {
         mDateButton.setText(mCrime.getDate().toString());
+        mSolvedCheckBox.setChecked(mCrime.isSolved());
     }
 
     @Override
@@ -120,7 +122,14 @@ public class FragmentCrime extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
-            updateDate();
+            UpdateData();
         }
+        else if(requestCode == REQUEST_CONFIRM)
+        {
+            boolean isSolved = (boolean) data.getSerializableExtra(ConfirmDialog.EXTRA_CHECKED);
+            mCrime.setSolved(isSolved);
+            UpdateData();
+        }
+
     }
 }
