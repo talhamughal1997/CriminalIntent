@@ -17,12 +17,13 @@ public class ConfirmDialog extends DialogFragment {
     public static final String SOLVED = "isSolved";
     public static final int REQUEST_CODE = 001;
     public static final String EXTRA_CHECKED = "criminal.solved";
+    private boolean isSolved;
 
     public static ConfirmDialog newInstance(boolean isSolved) {
         Bundle Args = new Bundle();
         Args.putSerializable(SOLVED, isSolved);
 
-        ConfirmDialog confirmDialog = new ConfirmDialog();
+        ConfirmDialog confirmDialog= new ConfirmDialog();
         confirmDialog.setArguments(Args);
         return confirmDialog;
     }
@@ -31,27 +32,33 @@ public class ConfirmDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
-        final boolean isSolved = (boolean) getArguments().getSerializable(SOLVED);
+         isSolved = (boolean) getArguments().getSerializable(SOLVED);
 
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.confirm_dialog, null);
 
         return new AlertDialog.Builder(getActivity())
-                .setView(v)
                 .setPositiveButton("Yes I'm Sure", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         sendResult(Activity.RESULT_OK,isSolved);
                     }
                 })
+                .setNeutralButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        sendResult(Activity.RESULT_CANCELED,isSolved);
+                    }
+                })
+                .setView(v)
                 .create();
     }
 
-    private void sendResult(int resultCode , boolean isSolved) {
+    private void sendResult(int resultCode , boolean isChecked) {
         if (getTargetFragment() == null) {
             return;
         }
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_CHECKED, resultCode);
+        intent.putExtra(EXTRA_CHECKED, isChecked);
 
         getTargetFragment().onActivityResult(getTargetRequestCode(),resultCode,intent);
     }

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -63,6 +64,7 @@ public class CrimeListFragment extends Fragment {
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView mTitleTextView;
         TextView mDateTextView;
+        ImageView imgCrime;
 
         private Crime mCrime;
 
@@ -72,6 +74,7 @@ public class CrimeListFragment extends Fragment {
 
             mTitleTextView = itemView.findViewById(R.id.crime_title);
             mDateTextView = itemView.findViewById(R.id.crime_date);
+            imgCrime = itemView.findViewById(R.id.imageView);
         }
 
         public void Bind(Crime crime) {
@@ -80,6 +83,7 @@ public class CrimeListFragment extends Fragment {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
             String formatDate = simpleDateFormat.format(mCrime.getDate());
             mDateTextView.setText(formatDate.toString());
+            imgCrime.setVisibility(mCrime.isSolved() ? View.GONE : View.VISIBLE);
         }
 
         @Override

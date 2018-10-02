@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.UUID;
@@ -35,7 +37,6 @@ public class FragmentCrime extends Fragment {
     EditText mTextField;
     Button mDateButton;
     CheckBox mSolvedCheckBox;
-
 
     public static FragmentCrime newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -82,7 +83,8 @@ public class FragmentCrime extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 FragmentManager fm = getFragmentManager();
-                ConfirmDialog dialog = ConfirmDialog.newInstance(mCrime.isSolved());
+                // Toast.makeText(getActivity(),String.valueOf(mSolvedCheckBox.isChecked()),Toast.LENGTH_SHORT).show();
+                ConfirmDialog dialog = ConfirmDialog.newInstance(mSolvedCheckBox.isChecked());
                 dialog.setTargetFragment(FragmentCrime.this,REQUEST_CONFIRM);
                 dialog.show(fm,DIALOG_CONFIRM);
 
@@ -124,8 +126,7 @@ public class FragmentCrime extends Fragment {
             mCrime.setDate(date);
             UpdateData();
         }
-        else if(requestCode == REQUEST_CONFIRM)
-        {
+        if (requestCode == REQUEST_CONFIRM) {
             boolean isSolved = (boolean) data.getSerializableExtra(ConfirmDialog.EXTRA_CHECKED);
             mCrime.setSolved(isSolved);
             UpdateData();
